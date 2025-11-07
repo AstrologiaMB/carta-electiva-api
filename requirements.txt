@@ -1,0 +1,20 @@
+# Cálculos astrológicos
+immanuel==1.3.2
+pyswisseph==2.10.3.2
+
+# Análisis de datos
+pandas==2.2.2
+numpy==1.26.4
+
+# Manejo de fechas y zonas horarias
+python-dateutil==2.9.0
+pytz==2024.1
+timezonefinder==5.2.0
+
+# API FastAPI
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+pydantic==2.10.3
+
+# Utilidades
+tqdm==4.67.0
