@@ -10,14 +10,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application
 COPY . .
 
-# Expose port (documentación, Railway ignora esto)
-EXPOSE 8080
+# Expose port for Fly.io
+EXPOSE 8005
 
-# CRITICAL: Uvicorn con configuración optimizada para Railway
-# Timeout extendido para cálculos astrológicos intensivos
+# CRITICAL: Uvicorn with Fly.io settings
+# Extended timeout for intensive astrological calculations
 CMD uvicorn app:app \
     --host 0.0.0.0 \
-    --port $PORT \
+    --port 8005 \
     --timeout-keep-alive 300 \
     --access-log \
     --log-level info
