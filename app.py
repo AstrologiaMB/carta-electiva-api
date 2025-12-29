@@ -354,6 +354,22 @@ class CartaElectivaService:
 # Instancia del servicio
 service = CartaElectivaService()
 
+@app.get("/")
+async def root():
+    """Endpoint raíz con información del servicio"""
+    return {
+        "service": "Carta Electiva API - Astrowellness",
+        "version": "1.0.0",
+        "status": "running",
+        "endpoints": {
+            "health": "/health",
+            "docs": "/docs",
+            "temas": "/temas",
+            "buscar": "/buscar (POST)",
+            "progress": "/progress/{task_id}"
+        }
+    }
+
 @app.get("/health")
 async def health_check():
     """Endpoint de verificación de salud"""
