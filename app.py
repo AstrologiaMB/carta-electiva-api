@@ -384,7 +384,8 @@ async def health_check():
         "version": "1.0.0",
         "timestamp": datetime.now().isoformat(),
         "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
-        "dependencies_ok": True
+        "dependencies_ok": True,
+        "commit_sha": os.getenv("COMMIT_SHA")
     }
 
 @app.get("/temas")
