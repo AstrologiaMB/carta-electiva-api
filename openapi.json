@@ -1,0 +1,510 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Carta Electiva API Strict",
+    "description": "Strict API for Electional Chart",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/buscar-fechas-v2": {
+      "post": {
+        "summary": "Buscar Fechas V2",
+        "operationId": "buscar_fechas_v2_buscar_fechas_v2_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BusquedaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BusquedaResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/buscar": {
+      "post": {
+        "summary": "Buscar",
+        "operationId": "buscar_buscar_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BusquedaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/progress/{task_id}": {
+      "get": {
+        "summary": "Progress",
+        "operationId": "progress_progress__task_id__get",
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Task Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BusquedaData": {
+        "properties": {
+          "momentos": {
+            "items": {
+              "$ref": "#/components/schemas/MomentoElectivo"
+            },
+            "type": "array",
+            "title": "Momentos"
+          },
+          "estadisticas": {
+            "$ref": "#/components/schemas/EstadisticasBusqueda"
+          },
+          "task_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Task Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "momentos",
+          "estadisticas"
+        ],
+        "title": "BusquedaData",
+        "description": "Datos de la respuesta de b\u00fasqueda"
+      },
+      "BusquedaRequest": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id",
+            "description": "ID del usuario"
+          },
+          "tema": {
+            "type": "string",
+            "title": "Tema",
+            "description": "Tema astrol\u00f3gico (trabajo, amor, etc.)"
+          },
+          "fecha_inicio": {
+            "type": "string",
+            "title": "Fecha Inicio",
+            "description": "Fecha de inicio (YYYY-MM-DD)"
+          },
+          "dias": {
+            "type": "integer",
+            "maximum": 365.0,
+            "minimum": 1.0,
+            "title": "Dias",
+            "description": "N\u00famero de d\u00edas a analizar",
+            "default": 30
+          },
+          "ubicacion": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Ubicacion",
+            "description": "Ubicaci\u00f3n con ciudad y pa\u00eds"
+          },
+          "carta_natal": {
+            "$ref": "#/components/schemas/CartaNatalData",
+            "description": "Datos de carta natal del usuario"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "tema",
+          "fecha_inicio",
+          "ubicacion",
+          "carta_natal"
+        ],
+        "title": "BusquedaRequest",
+        "description": "Modelo para solicitud de b\u00fasqueda de carta electiva"
+      },
+      "BusquedaResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BusquedaData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "task_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Task Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "title": "BusquedaResponse",
+        "description": "Respuesta de b\u00fasqueda de carta electiva"
+      },
+      "CartaNatalData": {
+        "properties": {
+          "fecha_nacimiento": {
+            "type": "string",
+            "title": "Fecha Nacimiento",
+            "description": "Fecha de nacimiento (YYYY-MM-DD)"
+          },
+          "hora_nacimiento": {
+            "type": "string",
+            "title": "Hora Nacimiento",
+            "description": "Hora de nacimiento (HH:MM)"
+          },
+          "ciudad": {
+            "type": "string",
+            "title": "Ciudad",
+            "description": "Ciudad de nacimiento"
+          },
+          "pais": {
+            "type": "string",
+            "title": "Pais",
+            "description": "Pa\u00eds de nacimiento"
+          },
+          "timezone": {
+            "type": "string",
+            "title": "Timezone",
+            "description": "Zona horaria"
+          }
+        },
+        "type": "object",
+        "required": [
+          "fecha_nacimiento",
+          "hora_nacimiento",
+          "ciudad",
+          "pais",
+          "timezone"
+        ],
+        "title": "CartaNatalData",
+        "description": "Modelo para datos de carta natal"
+      },
+      "EstadisticasBusqueda": {
+        "properties": {
+          "total_momentos": {
+            "type": "integer",
+            "title": "Total Momentos"
+          },
+          "tiempo_calculo": {
+            "type": "string",
+            "title": "Tiempo Calculo"
+          },
+          "factor_optimizacion": {
+            "type": "string",
+            "title": "Factor Optimizacion"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_momentos",
+          "tiempo_calculo",
+          "factor_optimizacion"
+        ],
+        "title": "EstadisticasBusqueda",
+        "description": "Estad\u00edsticas de la b\u00fasqueda realizada"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "MomentoElectivo": {
+        "properties": {
+          "ranking": {
+            "type": "integer",
+            "title": "Ranking",
+            "description": "Posici\u00f3n en el ranking (1 es mejor)"
+          },
+          "fecha_hora": {
+            "type": "string",
+            "title": "Fecha Hora",
+            "description": "Fecha y hora del momento (ISO 8601)"
+          },
+          "puntuacion_total": {
+            "type": "number",
+            "title": "Puntuacion Total",
+            "description": "Puntuaci\u00f3n calculada"
+          },
+          "enraizamiento_pct": {
+            "type": "number",
+            "title": "Enraizamiento Pct",
+            "description": "Porcentaje de enraizamiento"
+          },
+          "calidad_pct": {
+            "type": "number",
+            "title": "Calidad Pct",
+            "description": "Porcentaje de calidad astrol\u00f3gica"
+          },
+          "categoria": {
+            "type": "string",
+            "title": "Categoria",
+            "description": "Categor\u00eda descriptiva"
+          },
+          "detalles": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detalles",
+            "description": "Detalles adicionales del c\u00e1lculo"
+          }
+        },
+        "type": "object",
+        "required": [
+          "ranking",
+          "fecha_hora",
+          "puntuacion_total",
+          "enraizamiento_pct",
+          "calidad_pct",
+          "categoria"
+        ],
+        "title": "MomentoElectivo",
+        "description": "Modelo para un momento electivo encontrado"
+      },
+      "ProgressResponse": {
+        "properties": {
+          "progress": {
+            "type": "integer",
+            "title": "Progress"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "progress",
+          "status"
+        ],
+        "title": "ProgressResponse",
+        "description": "Respuesta de progreso"
+      },
+      "TaskResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "task_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Task Id"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "title": "TaskResponse",
+        "description": "Respuesta de inicio de tarea"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

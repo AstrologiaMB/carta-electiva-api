@@ -38,59 +38,13 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Modelos Pydantic
-class CartaNatalData(BaseModel):
-    """Modelo para datos de carta natal"""
-    fecha_nacimiento: str = Field(..., description="Fecha de nacimiento (YYYY-MM-DD)")
-    hora_nacimiento: str = Field(..., description="Hora de nacimiento (HH:MM)")
-    ciudad: str = Field(..., description="Ciudad de nacimiento")
-    pais: str = Field(..., description="País de nacimiento")
-    timezone: str = Field(..., description="Zona horaria")
-
-class BusquedaRequest(BaseModel):
-    """Modelo para solicitud de búsqueda de carta electiva"""
-    user_id: str = Field(..., description="ID del usuario")
-    tema: str = Field(..., description="Tema astrológico (trabajo, amor, etc.)")
-    fecha_inicio: str = Field(..., description="Fecha de inicio (YYYY-MM-DD)")
-    dias: int = Field(30, ge=1, le=365, description="Número de días a analizar")
-    ubicacion: Dict[str, str] = Field(..., description="Ubicación con ciudad y país")
-    carta_natal: CartaNatalData = Field(..., description="Datos de carta natal del usuario")
-
-    @validator('tema')
-    def validar_tema(cls, v):
-        temas_validos = get_temas_disponibles()
-        if v not in temas_validos:
-            raise ValueError(f"Tema '{v}' no válido. Disponibles: {temas_validos}")
-        return v
-
-    @validator('fecha_inicio')
-    def validar_fecha(cls, v):
-        try:
-            datetime.strptime(v, '%Y-%m-%d')
-            return v
-        except ValueError:
-            raise ValueError("Formato de fecha debe ser YYYY-MM-DD")
-
-class MomentoElectivo(BaseModel):
-    """Modelo para un momento electivo encontrado"""
-    ranking: int
-    fecha_hora: str
-    puntuacion_total: float
-    enraizamiento_pct: float
-    calidad_pct: float
-    categoria: str
-
-class EstadisticasBusqueda(BaseModel):
-    """Estadísticas de la búsqueda realizada"""
-    total_momentos: int
-    tiempo_calculo: str
-    factor_optimizacion: str
-
-class BusquedaResponse(BaseModel):
-    """Respuesta de búsqueda de carta electiva"""
-    success: bool
-    data: Optional[Dict[str, Any]] = None
-    error: Optional[str] = None
+from strict_models import (
+    CartaNatalData, 
+    BusquedaRequest, 
+    MomentoElectivo, 
+    EstadisticasBusqueda, 
+    BusquedaResponse
+)
 
 # Estado global para tareas en background y progreso real
 background_tasks_status = {}
